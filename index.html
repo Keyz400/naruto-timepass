@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naruto Universe | Episode Guide</title>
+    <link rel="preload" href="./naruto-episodes.json" as="fetch" crossorigin="anonymous">
+    <link rel="preload" href="./shippuden-episodes.json" as="fetch" crossorigin="anonymous">
+    <link rel="preload" href="./naruto-links.json" as="fetch" crossorigin="anonymous">
+    <link rel="preload" href="./shippuden-links.json" as="fetch" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF4500; /* Fiery orange */
+            --primary-dark: #D83A00;
+            --secondary: #00BFFF; /* Deep sky blue */
+            --dark: #0B0B0B;
+            --light: #E6E6FA;
+            --accent: #FFD700; /* Gold */
+            --filler: #FF6347; /* Tomato */
+            --telegram: #1DA1F2;
+            --telegram-dark: #0E8AD8;
+            --instagram: #C13584;
+            --instagram-dark: #A12C6E;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Dynamic background with subtle animations */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(255, 69, 0, 0.15) 0%, transparent 30%),
+                radial-gradient(circle at 70% 80%, rgba(0, 191, 255, 0.15) 0%, transparent 30%),
+                linear-gradient(180deg, #0B0B0B, #1C2526);
+            z-index: -2;
+            animation: bgPulse 15s infinite ease-in-out;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Shuriken pattern overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80" opacity="0.05"><path fill="%23FF4500" d="M40 10L50 30H70L55 45L60 65L40 55L20 65L25 45L10 30H30L40 10Z"/></svg>');
+            z-index: -1;
+        }
+
+        .header {
+            background: linear-gradient(90deg, rgba(11, 11, 11, 0.95), rgba(28, 37, 38, 0.9));
+            padding: 1.5rem 2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: url('./logo.gif') no-repeat center;
+            background-size: contain;
+            filter: drop-shadow(0 0 10px var(--primary));
+            animation: logoSpin 20s linear infinite;
+        }
+
+        @keyframes logoSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 2rem;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-button.telegram {
+            background: linear-gradient(45deg, var(--telegram), var(--telegram-dark));
+        }
+
+        .nav-button.instagram {
+            background: linear-gradient(45deg, var(--instagram), var(--instagram-dark));
+        }
+
+        .nav-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.5);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .series-selector {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .series-tab {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light);
+            border: 2px solid var(--primary);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .series-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            transition: left 0.5s;
+        }
+
+        .series-tab:hover::before {
+            left: 100%;
+        }
+
+        .series-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--primary);
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem 0.8rem 3rem;
+            font-size: 1rem;
+            color: var(--light);
+            font-family: 'Roboto', sans-serif;
+            transition: box-shadow 0.3s;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .episode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .episode-card {
+            background: linear-gradient(135deg, rgba(28, 37, 38, 0.9), rgba(11, 11, 11, 0.95));
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .episode-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(255, 69, 0, 0.5);
+        }
+
+        .episode-thumbnail-container {
+            position: relative;
+            overflow: hidden;
+            height: 0;
+            padding-bottom: 56.25%;
+        }
+
+        .episode-thumbnail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .episode-card:hover .episode-thumbnail {
+            transform: scale(1.1);
+        }
+
+        .episode-number {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .filler-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--filler);
+            color: white;
+            font-weight: bold;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .episode-content {
+            padding: 1.5rem;
+        }
+
+        .episode-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .episode-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.75rem;
+        }
+
+        .episode-score {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .episode-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .watch-button-container {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .watch-button, .download-button {
+            flex: 1;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .download-button {
+            flex: 0 0 auto;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .watch-button:hover, .download-button:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .download-icon {
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z'/%3E%3C/svg%3E");
+            background-size: cover;
+        }
+
+        .load-more-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .load-more-button {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(255, 69, 0, 0.4);
+        }
+
+        .load-more-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 69, 0, 0.6);
+        }
+
+        .load-more-button:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            grid-column: 1 / -1;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 69, 0, 0.1);
+            border-radius: 10px;
+            border-left: 5px solid var(--primary);
+            margin: 2rem 0;
+            grid-column: 1 / -1;
+        }
+
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .video-modal-content {
+            background: var(--dark);
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(255, 69, 0, 0.5);
+        }
+
+        .video-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 69, 0, 0.2);
+        }
+
+        .video-modal-header h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+
+        .close-modal {
+            color: var(--light);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--primary);
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+
+        .video-container iframe, 
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .telegram-icon {
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z'/%3E%3C/svg%3E");
+            background-size: cover;
+        }
+
+        .instagram-icon {
+            width: 18px;
+            height: 18px;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z'/%3E%3C/svg%3E");
+            background-size: cover;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .logo-text {
+                font-size: 1.5rem;
+            }
+
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .episode-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .episode-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .series-tab {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .search-bar {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h1 class="logo-text">NARUTO UNIVERSE</h1>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-button telegram" onclick="window.location.href='https://t.me/lox_bots'">
+                    <span class="telegram-icon"></span> Telegram
+                </button>
+                <button class="nav-button instagram" onclick="window.open('https://www.instagram.com', '_blank')">
+                    <span class="instagram-icon"></span> Instagram
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="series-selector">
+            <button class="series-tab active" data-id="20" data-series="naruto">NARUTO</button>
+            <button class="series-tab" data-id="1735" data-series="shippuden">SHIPPUDEN</button>
+            <button class="series-tab" data-id="shinobi" data-series="shinobi" onclick="window.location.href='index2.html'">SHINOBI</button>
+        </div>
+
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-bar" id="episode-search" placeholder="Search episodes by number or title...">
+        </div>
+        
+        <div id="episodes-container" class="episode-grid">
+            <div class="loading-container">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+
+        <div class="load-more-container">
+            <button class="load-more-button" id="load-episodes">Load More Episodes</button>
+        </div>
+    </main>
+
+    <div id="video-modal" class="video-modal">
+        <div class="video-modal-content">
+            <div class="video-modal-header">
+                <h3 id="video-title">Episode Title</h3>
+                <span class="close-modal">×</span>
+            </div>
+            <div class="video-container">
+                <iframe id="video-frame" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const EPISODES_PER_PAGE = 20;
+        const TOTAL_NARUTO_EPISODES = 220;
+        const TOTAL_SHIPPUDEN_EPISODES = 500;
+        const DEFAULT_THUMB_NARUTO = 'https://vineetjakhar.vineetjakhar.workers.dev/0:/sHEJ5lt.jpg';
+        const DEFAULT_THUMB_SHIPPUDEN = 'https://vineetjakhar.vineetjakhar.workers.dev/0:/SvdRLd5.jpg';
+
+        let currentSeriesId = 20;
+        let currentSeries = 'naruto';
+        let episodeOffset = 0;
+        let hasMoreEpisodes = true;
+        let narutoLinks = {};
+        let shippudenLinks = {};
+        let displayedEpisodes = [];
+        let narutoEpisodes = [];
+        let shippudenEpisodes = [];
+        let isMobile = false;
+
+        const loadButton = document.getElementById('load-episodes');
+        const episodesContainer = document.getElementById('episodes-container');
+        const seriesButtons = document.querySelectorAll('.series-tab');
+        const searchInput = document.getElementById('episode-search');
+        const videoModal = document.getElementById('video-modal');
+        const videoFrame = document.getElementById('video-frame');
+        const videoTitle = document.getElementById('video-title');
+        const closeModal = document.querySelector('.close-modal');
+
+        function detectMobileDevice() {
+            isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        function showError(message) {
+            console.error(message);
+            episodesContainer.innerHTML = `
+                <div class="error-message">
+                    <h3>Error Loading Content</h3>
+                    <p>${message}</p>
+                    <button onclick="location.reload()" class="watch-button" style="margin-top: 1rem;">Reload Page</button>
+                </div>
+            `;
+            loadButton.disabled = true;
+        }
+
+        function closeVideoModal() {
+            videoModal.style.display = 'none';
+            videoFrame.src = '';
+            document.body.style.overflow = 'auto';
+        }
+
+        closeModal.addEventListener('click', closeVideoModal);
+
+        videoModal.addEventListener('click', function(e) {
+            if (e.target === videoModal) {
+                closeVideoModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && videoModal.style.display === 'flex') {
+                closeVideoModal();
+            }
+        });
+
+        function formatVideoLink(link) {
+            if (isMobile) {
+                return link;
+            } else {
+                if (link.startsWith('intent:')) {
+                    const videoUrl = link.split('intent:')[1].split('#Intent')[0];
+                    return `https://grotesque-celinda-vinesh4540-765dd3e8.koyeb.app/player/${videoUrl}`;
+                }
+                return link;
+            }
+        }
+
+        function formatDownloadLink(link) {
+            if (link.startsWith('intent:')) {
+                return link.split('intent:')[1].split('#Intent')[0];
+            }
+            return link;
+        }
+
+        function handleVideoPlay(link, title = 'Episode') {
+            const formattedLink = formatVideoLink(link);
+            
+            if (isMobile) {
+                window.location.href = formattedLink;
+            } else {
+                openVideoModal(formattedLink, title);
+            }
+        }
+
+        function openVideoModal(link, title = 'Episode') {
+            videoFrame.src = link;
+            videoTitle.textContent = title;
+            videoModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function handleDownload(link) {
+            const formattedLink = formatDownloadLink(link);
+            if (formattedLink && formattedLink !== '#') {
+                window.open(formattedLink, '_blank');
+            } else {
+                alert('No download link available for this episode');
+            }
+        }
+
+        async function loadData() {
+            try {
+                const [narutoLinksResponse, shippudenLinksResponse] = await Promise.all([
+                    fetch('./naruto-links.json'),
+                    fetch('./shippuden-links.json')
+                ]);
+
+                if (narutoLinksResponse.ok) {
+                    const narutoData = await narutoLinksResponse.json();
+                    Object.keys(narutoData).forEach(key => {
+                        if (key.startsWith('ep')) {
+                            const num = key.substring(2);
+                            narutoLinks[num] = narutoData[key].link || '#';
+                        }
+                    });
+                } else {
+                    throw new Error('Failed to load Naruto episode links');
+                }
+
+                if (shippudenLinksResponse.ok) {
+                    const shippudenData = await shippudenLinksResponse.json();
+                    Object.keys(shippudenData).forEach(key => {
+                        if (key.startsWith('ep')) {
+                            const num = key.substring(2);
+                            shippudenLinks[num] = shippudenData[key].link || '#';
+                        }
+                    });
+                } else {
+                    throw new Error('Failed to load Shippuden episode links');
+                }
+
+                const [narutoEpisodesResponse, shippudenEpisodesResponse] = await Promise.all([
+                    fetch('./naruto-episodes.json'),
+                    fetch('./shippuden-episodes.json')
+                ]);
+
+                if (narutoEpisodesResponse.ok) {
+                    narutoEpisodes = await narutoEpisodesResponse.json();
+                    narutoEpisodes = narutoEpisodes.filter(ep => narutoLinks[ep.mal_id] && narutoLinks[ep.mal_id] !== '#');
+                } else {
+                    throw new Error('Failed to load Naruto episode data');
+                }
+
+                if (shippudenEpisodesResponse.ok) {
+                    shippudenEpisodes = await shippudenEpisodesResponse.json();
+                    shippudenEpisodes = shippudenEpisodes.filter(ep => shippudenLinks[ep.mal_id] && shippudenLinks[ep.mal_id] !== '#');
+                } else {
+                    throw new Error('Failed to load Shippuden episode data');
+                }
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showError(`Failed to load data: ${error.message}. Please check your internet connection and try again.`);
+                return false;
+            }
+            return true;
+        }
+
+        function displayEpisodes(animeId, specificEpisode = null) {
+            episodesContainer.innerHTML = '';
+
+            const allEpisodes = animeId === 20 ? narutoEpisodes : shippudenEpisodes;
+
+            if (allEpisodes.length === 0) {
+                showError('No episodes available for this series.');
+                return;
+            }
+
+            let episodesToShow;
+            if (specificEpisode !== null) {
+                episodesToShow = allEpisodes.filter(ep => ep.mal_id === specificEpisode);
+                episodeOffset = 0;
+                hasMoreEpisodes = false;
+            } else {
+                const startEpisode = 0;
+                const endEpisode = startEpisode + EPISODES_PER_PAGE;
+                episodesToShow = allEpisodes.slice(startEpisode, endEpisode);
+                episodeOffset = endEpisode;
+                hasMoreEpisodes = episodeOffset < allEpisodes.length;
+            }
+
+            displayedEpisodes = episodesToShow;
+            renderEpisodes(episodesToShow, animeId);
+
+            loadButton.textContent = hasMoreEpisodes ? 'Load More Episodes' : 'All Episodes Loaded';
+            loadButton.disabled = !hasMoreEpisodes;
+
+            const totalEpisodes = animeId === 20 ? TOTAL_NARUTO_EPISODES : TOTAL_SHIPPUDEN_EPISODES;
+            if (!hasMoreEpisodes && allEpisodes.length < totalEpisodes) {
+                const comingSoonCard = document.createElement('div');
+                comingSoonCard.className = 'episode-card';
+                comingSoonCard.innerHTML = '<div class="episode-content" style="text-align: center; padding: 2rem;">More episodes coming soon!</div>';
+                episodesContainer.appendChild(comingSoonCard);
+            }
+        }
+
+        function renderEpisodes(episodes, animeId) {
+            if (episodes.length === 0) {
+                episodesContainer.innerHTML = '<div class="error-message">No episodes found matching your search.</div>';
+                loadButton.disabled = true;
+                return;
+            }
+
+            const isNaruto = parseInt(animeId) === 20;
+            const defaultThumb = isNaruto ? DEFAULT_THUMB_NARUTO : DEFAULT_THUMB_SHIPPUDEN;
+            const linksObject = isNaruto ? narutoLinks : shippudenLinks;
+            const seriesName = isNaruto ? 'Naruto' : 'Naruto Shippuden';
+
+            episodes.forEach(episode => {
+                const isFiller = episode.filler || false;
+                const episodeLink = linksObject[episode.mal_id] || '#';
+                const synopsis = episode.synopsis || 'Lang: Hindi-Tamil-Tel-Mal-Ben-Eng-Jap';
+                const episodeTitle = episode.title || 'Untitled Episode';
+                const fullTitle = `${seriesName} - Episode ${episode.mal_id}: ${episodeTitle}`;
+
+                const episodeCard = document.createElement('div');
+                episodeCard.className = 'episode-card';
+                episodeCard.setAttribute('data-episode-id', episode.mal_id);
+
+                episodeCard.innerHTML = `
+                    <div class="episode-thumbnail-container">
+                        <img loading="lazy" src="${defaultThumb}" alt="Episode ${episode.mal_id}" class="episode-thumbnail">
+                        <div class="episode-number">EP ${episode.mal_id}</div>
+                        ${isFiller ? '<div class="filler-badge">Filler</div>' : ''}
+                    </div>
+                    <div class="episode-content">
+                        <h3 class="episode-title">${episodeTitle}</h3>
+                        <div class="episode-meta">
+                            <span>${episode.aired || 'Unknown date'}</span>
+                            <span class="episode-score">⭐ ${episode.score || 'N/A'}</span>
+                        </div>
+                        <p class="episode-description">${synopsis}</p>
+                        <div class="watch-button-container">
+                            <button class="watch-button" data-episode-link="${episodeLink}" data-episode-title="${fullTitle}">
+                                Watch Now
+                            </button>
+                            <button class="download-button" data-episode-link="${episodeLink}">
+                                <span class="download-icon"></span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                episodesContainer.appendChild(episodeCard);
+            });
+
+            document.querySelectorAll('.watch-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const link = button.getAttribute('data-episode-link');
+                    const title = button.getAttribute('data-episode-title');
+                    if (link && link !== '#') {
+                        handleVideoPlay(link, title);
+                    } else {
+                        alert(`No link available for ${title}`);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.download-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const link = button.getAttribute('data-episode-link');
+                    handleDownload(link);
+                });
+            });
+
+            document.querySelectorAll('.episode-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const button = card.querySelector('.watch-button');
+                    const link = button.getAttribute('data-episode-link');
+                    const title = button.getAttribute('data-episode-title');
+                    if (link && link !== '#') {
+                        handleVideoPlay(link, title);
+                    }
+                });
+            });
+        }
+
+        function searchEpisodes() {
+            const query = searchInput.value.trim().toLowerCase();
+            if (!query) {
+                episodeOffset = 0;
+                hasMoreEpisodes = true;
+                episodesContainer.innerHTML = '';
+                displayEpisodes(currentSeriesId);
+                return;
+            }
+
+            const allEpisodes = currentSeriesId === 20 ? narutoEpisodes : shippudenEpisodes;
+            const episodeNumber = parseInt(query);
+            
+            if (!isNaN(episodeNumber)) {
+                const foundEpisode = allEpisodes.find(ep => ep.mal_id === episodeNumber);
+                if (foundEpisode) {
+                    episodesContainer.innerHTML = '';
+                    renderEpisodes([foundEpisode], currentSeriesId);
+                    loadButton.disabled = true;
+                } else {
+                    episodesContainer.innerHTML = '<div class="error-message">Episode not found. Please try another number.</div>';
+                    loadButton.disabled = true;
+                }
+            } else {
+                const filteredEpisodes = allEpisodes.filter(ep => 
+                    ep.title && ep.title.toLowerCase().includes(query)
+                );
+                
+                if (filteredEpisodes.length > 0) {
+                    episodesContainer.innerHTML = '';
+                    renderEpisodes(filteredEpisodes, currentSeriesId);
+                    loadButton.disabled = true;
+                } else {
+                    episodesContainer.innerHTML = '<div class="error-message">No episodes found matching your search.</div>';
+                    loadButton.disabled = true;
+                }
+            }
+        }
+
+        function loadMoreEpisodes() {
+            if (!hasMoreEpisodes) {
+                loadButton.textContent = 'All Episodes Loaded';
+                const allEpisodes = currentSeriesId === 20 ? narutoEpisodes : shippudenEpisodes;
+                const totalEpisodes = currentSeriesId === 20 ? TOTAL_NARUTO_EPISODES : TOTAL_SHIPPUDEN_EPISODES;
+                
+                if (allEpisodes.length < totalEpisodes) {
+                    const comingSoonCard = document.createElement('div');
+                    comingSoonCard.className = 'episode-card';
+                    comingSoonCard.innerHTML = '<div class="episode-content" style="text-align: center; padding: 2rem;">More episodes coming soon!</div>';
+                    episodesContainer.appendChild(comingSoonCard);
+                }
+                return;
+            }
+
+            const allEpisodes = currentSeriesId === 20 ? narutoEpisodes : shippudenEpisodes;
+            const startEpisode = episodeOffset;
+            const endEpisode = startEpisode + EPISODES_PER_PAGE;
+            const episodesToShow = allEpisodes.slice(startEpisode, endEpisode);
+
+            episodeOffset = endEpisode;
+            hasMoreEpisodes = episodeOffset < allEpisodes.length;
+            displayedEpisodes = [...displayedEpisodes, ...episodesToShow];
+
+            renderEpisodes(episodesToShow, currentSeriesId);
+            loadButton.textContent = hasMoreEpisodes ? 'Load More Episodes' : 'All Episodes Loaded';
+            loadButton.disabled = !hasMoreEpisodes;
+
+            const totalEpisodes = currentSeriesId === 20 ? TOTAL_NARUTO_EPISODES : TOTAL_SHIPPUDEN_EPISODES;
+            if (!hasMoreEpisodes && allEpisodes.length < totalEpisodes) {
+                const comingSoonCard = document.createElement('div');
+                comingSoonCard.className = 'episode-card';
+                comingSoonCard.innerHTML = '<div class="episode-content" style="text-align: center; padding: 2rem;">More episodes coming soon!</div>';
+                episodesContainer.appendChild(comingSoonCard);
+            }
+        }
+
+        async function init() {
+            detectMobileDevice();
+            
+            currentSeriesId = 20;
+            currentSeries = 'naruto';
+            episodeOffset = 0;
+            hasMoreEpisodes = true;
+
+            seriesButtons.forEach(btn => btn.classList.remove('active'));
+            document.querySelector('[data-series="naruto"]').classList.add('active');
+
+            try {
+                const success = await loadData();
+                if (success) {
+                    displayEpisodes(currentSeriesId);
+                }
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showError('Failed to initialize the app. Please reload the page.');
+            }
+        }
+
+        seriesButtons.forEach(button => {
+            if (button.dataset.series !== 'shinobi') {
+                button.addEventListener('click', () => {
+                    seriesButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    currentSeriesId = parseInt(button.dataset.id);
+                    currentSeries = button.dataset.series;
+                    episodeOffset = 0;
+                    hasMoreEpisodes = true;
+
+                    episodesContainer.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div></div>';
+                    displayEpisodes(currentSeriesId);
+                });
+            }
+        });
+
+        loadButton.addEventListener('click', loadMoreEpisodes);
+
+        let searchTimeout;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(searchEpisodes, 300);
+        });
+
+        window.addEventListener('load', init);
+
+        window.addEventListener('offline', () => {
+            showError('You are offline. Please check your internet connection.');
+        });
+    </script>
+</body>
+</html>
